@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pricing Page — Dynamic Headline Handoff</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f5f5f5;
+      color: #111;
+      padding: 48px 32px;
+    }
+
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    /* ── Header ── */
+    .header {
+      margin-bottom: 48px;
+    }
+    .header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+    .header p {
+      margin-top: 8px;
+      font-size: 15px;
+      color: #555;
+      max-width: 640px;
+      line-height: 1.6;
+    }
+    .badge {
+      display: inline-block;
+      margin-top: 12px;
+      padding: 4px 10px;
+      background: #111;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 600;
+      border-radius: 4px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    /* ── Context block ── */
+    .context {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 48px;
+    }
+    .context-card {
+      background: #fff;
+      border: 1px solid #e0e0e0;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .context-card img {
+      width: 100%;
+      display: block;
+    }
+    .context-card .label {
+      padding: 12px 16px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #888;
+      border-top: 1px solid #e0e0e0;
+    }
+
+    /* ── Section title ── */
+    .section-title {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #888;
+      margin-bottom: 16px;
+    }
+
+    /* ── Table ── */
+    .table-wrap {
+      background: #fff;
+      border: 1px solid #e0e0e0;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead th {
+      background: #fafafa;
+      padding: 12px 16px;
+      text-align: left;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #888;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid #f0f0f0;
+      transition: background 0.15s;
+    }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: #fafafa; }
+
+    td {
+      padding: 14px 16px;
+      font-size: 14px;
+      vertical-align: middle;
+    }
+
+    .col-num {
+      width: 40px;
+      color: #bbb;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .col-trigger {
+      width: 200px;
+      color: #444;
+      font-size: 13px;
+    }
+
+    .col-headline {
+      font-size: 15px;
+      font-weight: 500;
+      color: #111;
+    }
+
+    .col-ss {
+      width: 120px;
+      text-align: center;
+    }
+    .thumb {
+      width: 100px;
+      height: 64px;
+      object-fit: cover;
+      object-position: top;
+      border-radius: 6px;
+      border: 1px solid #e0e0e0;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .thumb:hover { opacity: 0.8; }
+
+    .no-ss {
+      font-size: 11px;
+      color: #bbb;
+    }
+
+    /* ── Lightbox ── */
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 32px;
+    }
+    .lightbox.open { display: flex; }
+    .lightbox img {
+      max-width: 100%;
+      max-height: 90vh;
+      border-radius: 10px;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.5);
+    }
+    .lightbox-close {
+      position: fixed;
+      top: 20px;
+      right: 24px;
+      color: #fff;
+      font-size: 28px;
+      cursor: pointer;
+      line-height: 1;
+      opacity: 0.7;
+    }
+    .lightbox-close:hover { opacity: 1; }
+
+    /* ── Footer ── */
+    .footer {
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 1px solid #e0e0e0;
+      font-size: 12px;
+      color: #aaa;
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <h1>Pricing Page — Dynamic Headline Copy</h1>
+    <p>The pricing page heading changes based on the action that brought the user to pricing. Each row below maps a trigger (entry point) to the headline to display. Implement via a <code>source</code> query param or equivalent context signal.</p>
+    <span class="badge">Engineering Handoff · April 2026</span>
+  </div>
+
+  <p class="section-title">Context — Pricing Page</p>
+  <div class="context" style="margin-bottom: 48px; grid-template-columns: 1fr;">
+    <div class="context-card" style="max-width: 600px;">
+      <img src="images/1.png" alt="Pricing page" />
+      <div class="label">Current pricing page — heading is what changes</div>
+    </div>
+  </div>
+
+  <p class="section-title">Entry Point → Headline Map</p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th class="col-num">#</th>
+          <th class="col-trigger">Entry Point / Action</th>
+          <th>Headline to Display</th>
+          <th class="col-ss">Screenshot</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <tr>
+          <td class="col-num">1</td>
+          <td class="col-trigger">Upgrade button (generic / fallback)</td>
+          <td class="col-headline">Upgrade to a plan that grows beautifully with you</td>
+          <td class="col-ss"><img class="thumb" src="images/9.png" onclick="openLightbox(this)" /></td>
+        </tr>
+
+        <tr>
+          <td class="col-num">2</td>
+          <td class="col-trigger">Workspace sidebar → Upgrade</td>
+          <td class="col-headline">Upgrade to a plan that grows beautifully with you</td>
+          <td class="col-ss"><img class="thumb" src="images/9.png" onclick="openLightbox(this)" /></td>
+        </tr>
+
+        <tr>
+          <td class="col-num">3</td>
+          <td class="col-trigger">PPT export (gated)</td>
+          <td class="col-headline">Upgrade to get unlimited, pixel-perfect PPT exports</td>
+          <td class="col-ss"><img class="thumb" src="images/8.png" onclick="openLightbox(this)" /></td>
+        </tr>
+
+        <tr>
+          <td class="col-num">4</td>
+          <td class="col-trigger">Export PDF (gated)</td>
+          <td class="col-headline">Upgrade to get unlimited, crisp PDF exports</td>
+          <td class="col-ss"><img class="thumb" src="images/8.png" onclick="openLightbox(this)" /></td>
+        </tr>
+
+        <tr>
+          <td class="col-num">5</td>
+          <td class="col-trigger">Export Google Slides (gated)</td>
+          <td class="col-headline">Upgrade to get unlimited, seamless Google Slides exports</td>
+          <td class="col-ss"><img class="thumb" src="images/8.png" onclick="openLightbox(this)" /></td>
+        </tr>
+
+        <tr>
+          <td class="col-num">6</td>
+          <td class="col-trigger">Export Image (gated)</td>
+          <td class="col-headline">Upgrade to export every slide as a pixel-perfect image</td>
+          <td class="col-ss"><img class="thumb" src="images/8.png" onclick="openLightbox(this)" /></td>
+        </tr>
+
+        <tr>
+          <td class="col-num">7</td>
+          <td class="col-trigger">Analytics (gated)</td>
+          <td class="col-headline">Upgrade to see how your decks truly perform</td>
+          <td class="col-ss"><img class="thumb" src="images/6.png" onclick="openLightbox(this)" /></td>
+        </tr>
+
+        <tr>
+          <td class="col-num">8</td>
+          <td class="col-trigger">Add comments (gated)</td>
+          <td class="col-headline">Upgrade to comment and collaborate on every slide</td>
+          <td class="col-ss"><img class="thumb" src="images/5.png" onclick="openLightbox(this)" /></td>
+        </tr>
+
+        <tr>
+          <td class="col-num">9</td>
+          <td class="col-trigger">Refresh data (gated)</td>
+          <td class="col-headline">Upgrade to keep your slides fresh with live data</td>
+          <td class="col-ss"><img class="thumb" src="images/7.png" onclick="openLightbox(this)" /></td>
+        </tr>
+
+        <tr>
+          <td class="col-num">10</td>
+          <td class="col-trigger">Meet and Edit (gated)</td>
+          <td class="col-headline">Upgrade to edit slides live with your team</td>
+          <td class="col-ss"><img class="thumb" src="images/3.png" onclick="openLightbox(this)" /></td>
+        </tr>
+
+        <tr>
+          <td class="col-num">11</td>
+          <td class="col-trigger">Meet and Present (gated)</td>
+          <td class="col-headline">Upgrade to present live, in the same room</td>
+          <td class="col-ss"><img class="thumb" src="images/4.png" onclick="openLightbox(this)" /></td>
+        </tr>
+
+        <tr>
+          <td class="col-num">12</td>
+          <td class="col-trigger">Create Projects (gated)</td>
+          <td class="col-headline">Upgrade to organize all your work into Projects</td>
+          <td class="col-ss"><img class="thumb" src="images/14.png" onclick="openLightbox(this)" /></td>
+        </tr>
+
+        <tr>
+          <td class="col-num">13</td>
+          <td class="col-trigger">Project knowledge (gated)</td>
+          <td class="col-headline">Upgrade to give your AI smarter project context</td>
+          <td class="col-ss"><span class="no-ss">No screenshot</span></td>
+        </tr>
+
+        <tr>
+          <td class="col-num">14</td>
+          <td class="col-trigger">Invite collaborators (gated)</td>
+          <td class="col-headline">Upgrade to build decks with your whole team</td>
+          <td class="col-ss"><img class="thumb" src="images/13.png" onclick="openLightbox(this)" /></td>
+        </tr>
+
+        <tr>
+          <td class="col-num">15</td>
+          <td class="col-trigger">Invite people dialog → View Plans</td>
+          <td class="col-headline">Upgrade to build decks with your whole team</td>
+          <td class="col-ss"><img class="thumb" src="images/13.png" onclick="openLightbox(this)" /></td>
+        </tr>
+
+        <tr>
+          <td class="col-num">16</td>
+          <td class="col-trigger">Buy credits</td>
+          <td class="col-headline">Upgrade to get generous credits</td>
+          <td class="col-ss"><img class="thumb" src="images/15.png" onclick="openLightbox(this)" /></td>
+        </tr>
+
+        <tr>
+          <td class="col-num">17</td>
+          <td class="col-trigger">Credits running low (usage page)</td>
+          <td class="col-headline">Upgrade to never run out of credits again</td>
+          <td class="col-ss"><img class="thumb" src="images/15.png" onclick="openLightbox(this)" /></td>
+        </tr>
+
+        <tr>
+          <td class="col-num">18</td>
+          <td class="col-trigger">Trial: 3 days left → Upgrade</td>
+          <td class="col-headline">Upgrade before your trial ends — keep everything you've built</td>
+          <td class="col-ss"><img class="thumb" src="images/16.png" onclick="openLightbox(this)" /></td>
+        </tr>
+
+        <tr>
+          <td class="col-num">19</td>
+          <td class="col-trigger">20% off banner → pricing</td>
+          <td class="col-headline">Upgrade now and lock in 20% off</td>
+          <td class="col-ss"><img class="thumb" src="images/10.png" onclick="openLightbox(this)" /></td>
+        </tr>
+
+        <tr>
+          <td class="col-num">20</td>
+          <td class="col-trigger">10% discount applied banner</td>
+          <td class="col-headline">Upgrade now — your 10% discount is already applied</td>
+          <td class="col-ss"><img class="thumb" src="images/17.png" onclick="openLightbox(this)" /></td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+
+  <div class="footer">
+    presentations.ai · Pricing page dynamic copy handoff · April 2026
+  </div>
+
+</div>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <span class="lightbox-close" onclick="closeLightbox()">✕</span>
+  <img id="lightbox-img" src="" alt="" />
+</div>
+
+<script>
+  function openLightbox(el) {
+    document.getElementById('lightbox-img').src = el.src;
+    document.getElementById('lightbox').classList.add('open');
+  }
+  function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('open');
+  }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+</script>
+
+</body>
+</html>
